@@ -18,11 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { ViewEventDialog } from "./dialogs/view-event-dialog";
 import { EditEventDialog } from "./dialogs/edit-event-dialog";
-
-
-// Will be added in next phase
-// import { EditEventDialog } from "./edit-event-dialog";
-// import { DeleteEventDialog } from "./delete-event-dialog";
+import { DeleteEventDialog } from "./dialogs/delete-event-dialog";
 
 type ModalType = "view" | "edit" | "delete" | null;
 
@@ -78,13 +74,8 @@ export default function EventActions({
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="
-                  text-destructive
-                  hover:text-destructive
-                  hover:bg-destructive/10
-                "
+                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
                                 onClick={() => setModal("delete")}
-                                disabled
                             >
                                 <Trash2 className="h-4 w-4" />
                             </Button>
@@ -97,26 +88,28 @@ export default function EventActions({
                 </div>
             </TooltipProvider>
 
-            <ViewEventDialog
+            {modal === "view" && <ViewEventDialog
                 open={modal === "view"}
                 onOpenChange={(open: boolean) =>
                     setModal(open ? "view" : null)
                 }
                 event={event}
             />
+            }
 
-            <EditEventDialog
+            {modal === "edit" && <EditEventDialog
                 open={modal === "edit"}
                 onOpenChange={(open) => setModal(open ? "edit" : null)}
                 event={event}
+            />}
+
+            {modal === "delete" && <DeleteEventDialog
+                open={modal === "delete"}
+                onOpenChange={(open) => setModal(open ? "delete" : null)}
+                event={event}
             />
-            {/*
-      <DeleteEventDialog
-          open={modal==="delete"}
-          onOpenChange={(open)=>setModal(open?"delete":null)}
-          event={event}
-      />
-      */}
+            }
+
         </>
     );
 }
