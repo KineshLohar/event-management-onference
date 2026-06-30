@@ -28,14 +28,14 @@ const Placeholder = ({
 }) => {
   if (!value?.trim()) {
     return (
-      <p className="italic text-neutral-500">
+      <p className="text-sm italic text-neutral-500">
         {placeholder}
       </p>
     );
   }
 
   return (
-    <p className="whitespace-pre-wrap leading-8 text-neutral-700">
+    <p className="text-sm whitespace-pre-wrap text-neutral-700">
       {value}
     </p>
   );
@@ -48,12 +48,12 @@ export const EventPdf = forwardRef<HTMLDivElement, EventPdfProps>(
         ref={ref}
         className="bg-white p-12 text-neutral-900"
       >
-        <header className="border-b pb-4">
+        <header className="border-b pb-2">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
             OnferenceTV
           </p>
 
-          <h1 className="mt-3 text-4xl font-bold">
+          <h1 className="mt-2 text-4xl font-bold">
             {event.eventName}
           </h1>
 
@@ -62,14 +62,12 @@ export const EventPdf = forwardRef<HTMLDivElement, EventPdfProps>(
           </p>
         </header>
 
-        {/* Basic Information */}
-
-        <section className="mt-4">
-          <h2 className="mb-6 text-lg font-semibold">
+        <section className="mt-2">
+          <h2 className="mb-2 text-lg font-semibold">
             Event Information
           </h2>
 
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <div className="mb-2 flex items-center gap-2">
                 <CalendarDays size={18} />
@@ -112,8 +110,8 @@ export const EventPdf = forwardRef<HTMLDivElement, EventPdfProps>(
 
         {/* Description */}
 
-        <section className="mt-6 border-t pt-6">
-          <div className="mb-4 flex items-center gap-2">
+        <section className="mt-2 border-t pt-6">
+          <div className="mb-2 flex items-center gap-2">
             <FileText size={18} />
             <h2 className="text-lg font-semibold">
               Event Description
@@ -128,8 +126,8 @@ export const EventPdf = forwardRef<HTMLDivElement, EventPdfProps>(
 
         {/* Speaker Intro */}
 
-        <section className="mt-6 border-t pt-6">
-          <div className="mb-4 flex items-center gap-2">
+        <section className="mt-2 border-t pt-6">
+          <div className="mb-2 flex items-center gap-2">
             <Sparkles size={18} />
             <h2 className="text-lg font-semibold">
               Speaker Introduction
@@ -137,14 +135,14 @@ export const EventPdf = forwardRef<HTMLDivElement, EventPdfProps>(
           </div>
 
           <Placeholder
-            value={event.speakerIntroduction}
+            value={event.speakerIntro}
             placeholder="No speaker introduction has been generated."
           />
         </section>
 
         {/* Footer */}
 
-        <footer className="mt-6 border-t pt-6 text-sm text-neutral-500">
+        <footer className="mt-2 border-t pt-4 text-sm text-neutral-500">
           <div className="flex justify-between">
             <span>
               Generated on{" "}

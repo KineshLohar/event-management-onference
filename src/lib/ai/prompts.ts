@@ -22,8 +22,6 @@ interface EventPromptInput {
   - Use ONLY the information supplied.
   - If insufficient information exists, write a professional and generic introduction.
   - Maintain a professional, engaging and neutral tone.
-  - Write in clear business English.
-  - Avoid buzzwords and unnecessary marketing language.
   - Do not repeat the same information multiple times.
   - Do not use bullet points.
   - Do not use headings.
@@ -40,7 +38,7 @@ interface EventPromptInput {
   
   1. Event Description
   - Write 2-3 concise paragraphs.
-  - Approximately 150-200 words.
+  - Approximately 150-180 words.
   - Describe the event purpose, audience, learning opportunity and importance.
   - Use only the supplied information.
   - Do not invent technical topics not implied by the title.

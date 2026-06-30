@@ -15,6 +15,7 @@ export async function generateEventContent(
 ) {
     const response = await openai.responses.parse({
         model: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
+        max_output_tokens: 400,
 
         input: [
             {
