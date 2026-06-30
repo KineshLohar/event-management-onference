@@ -15,31 +15,71 @@ export async function GET() {
     }
 }
 
-export async function POST(request: NextRequest) {
-    let body: unknown;
+export async function POST(request: Request) {
     try {
+      
+      let body: any;
+  
+      try {
         body = await request.json();
-    } catch {
-        return NextResponse.json({ error: "Request body must be valid JSON" }, { status: 400 });
-    }
+      } catch {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "INVALID_JSON",
+            message: "Request body must be valid JSON",
+          },
+          { status: 400 }
+        );
+      }
 
-    try {
-        const data = eventSchema.parse(body);
-        const [event] = await db.insert(events).values(data).returning();
-
-        revalidatePath("/"); // invalidate cached dashboard so SSR reflects the new row
-
-        return NextResponse.json(event, { status: 201 });
+      const payload = {
+        ...body,
+        eventDate : new Date(body.eventDate)
+      }
+  
+      const parsed = eventSchema.safeParse(payload);
+  
+      if (!parsed.success) {
+        const { fieldErrors } = flattenError(parsed.error);
+  
+        return NextResponse.json(
+          {
+            success: false,
+            error: "VALIDATION_ERROR",
+            message: "Invalid input data",
+            fields: fieldErrors,
+          },
+          { status: 400 }
+        );
+      }
+  
+      const data = parsed.data;
+  
+      const [event] = await db.insert(events).values(data).returning();
+  
+      revalidatePath("/");
+  
+      return NextResponse.json(
+        {
+          success: true,
+          data: event,
+        },
+        { status: 201 }
+      );
     } catch (error) {
-        if (error instanceof ZodError) {
-
-            const { fieldErrors } = flattenError(error);
-            return NextResponse.json(
-                { error: "Validation failed", details: fieldErrors },
-                { status: 400 }
-            );
-        }
-        console.error("POST /api/events failed:", error);
-        return NextResponse.json({ error: "Failed to create event" }, { status: 500 });
+      // -----------------------------
+      // 6. Unexpected errors
+      // -----------------------------
+      console.error("POST /api/events failed:", error);
+  
+      return NextResponse.json(
+        {
+          success: false,
+          error: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong while creating event",
+        },
+        { status: 500 }
+      );
     }
-}
+  }

@@ -1,15 +1,39 @@
 import { z } from "zod";
 
+const startOfToday = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+};
+
 export const eventSchema = z.object({
-  eventName: z.string().trim().min(1, "Event name is required").max(200),
+  eventName: z
+    .string()
+    .trim()
+    .min(1, "Event name is required")
+    .max(200, "Event name cannot exceed 200 characters"),
+
   eventDate: z
-    .date()
-    .refine((d) => !isNaN(d.getTime()), { message: "Please select a valid event date" }),
-  speakerName: z.string().trim().min(1, "Speaker name is required").max(150),
-  speakerDesignation: z.string().trim().min(1, "Speaker designation is required").max(200),
+    .date({
+      error: "Invalid date",
+    })
+    .refine((date) => date >= startOfToday(), {
+      message: "Please select a future date",
+    }),
+
+  speakerName: z
+    .string()
+    .trim()
+    .min(1, "Speaker name is required")
+    .max(150, "Speaker name cannot exceed 150 characters"),
+
+  speakerDesignation: z
+    .string()
+    .trim()
+    .min(1, "Speaker designation is required")
+    .max(200, "Speaker designation cannot exceed 200 characters"),
 });
 
 export type EventFormValues = z.infer<typeof eventSchema>;
 
-// Reused later for PATCH — all fields optional but still validated when present
 export const updateEventSchema = eventSchema.partial();
