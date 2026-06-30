@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import type { Event } from "@/db/schema";
+import EventActions from "./event-actions";
 
 export function EventTable({ events }: { events: Event[] }) {
   if (events.length === 0) {
@@ -21,6 +22,7 @@ export function EventTable({ events }: { events: Event[] }) {
             <TableHead>Date</TableHead>
             <TableHead>Speaker</TableHead>
             <TableHead>Designation</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -30,6 +32,7 @@ export function EventTable({ events }: { events: Event[] }) {
               <TableCell>{format(event.eventDate, "PPP")}</TableCell>
               <TableCell>{event.speakerName}</TableCell>
               <TableCell>{event.speakerDesignation}</TableCell>
+              <TableCell><EventActions event={event} /></TableCell>
             </TableRow>
           ))}
         </TableBody>
