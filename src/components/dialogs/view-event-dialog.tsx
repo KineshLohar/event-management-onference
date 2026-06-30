@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { EventDetails } from "./event-details";
+import { EventDetails } from "../event-details";
 
 interface ViewEventDialogProps {
     open: boolean;
@@ -32,7 +32,6 @@ export function ViewEventDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="p-0 sm:max-w-4xl gap-0">
-
                 <DialogHeader className="border-b p-5 gap-0">
                     <DialogTitle className="text-xl font-semibold tracking-tight">
                         Event Details
@@ -42,9 +41,6 @@ export function ViewEventDialog({
                         View complete information about this conference event.
                     </DialogDescription>
                 </DialogHeader>
-
-                {/* Content */}
-
                 <ScrollArea className="max-h-[70vh]">
                     <div className="px-4 my-4">
                         <EventDetails event={event} />

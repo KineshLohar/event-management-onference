@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -24,8 +24,11 @@ import { cn } from "@/lib/utils";
 import { EventFormValues, eventSchema } from "@/lib/event.validation";
 import { AxiosError } from "axios";
 import { api } from "@/lib/axios";
+import { Event } from "@/db/schema";
 
 interface EventFormProps {
+  mode: "create" | "edit";
+  event?: Event;
   onSuccess?: () => void;
 }
 
@@ -35,7 +38,8 @@ interface EventFormProps {
 const labelClass =
   "flex items-center gap-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground";
 
-export function EventForm({ onSuccess }: EventFormProps) {
+export function EventForm({ mode,
+  event, onSuccess }: EventFormProps) {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
 
@@ -49,25 +53,84 @@ export function EventForm({ onSuccess }: EventFormProps) {
     },
   });
 
+  useEffect(() => {
+    if (mode === "edit" && event) {
+      reset({
+        eventName: event.eventName,
+        eventDate: new Date(event.eventDate),
+        speakerName: event.speakerName,
+        speakerDesignation: event.speakerDesignation,
+      });
+
+      return;
+    }
+
+    reset({
+      eventName: "",
+      eventDate: new Date(),
+      speakerName: "",
+      speakerDesignation: "",
+    });
+  }, [mode, event, reset]);
+
   const onSubmit = async (values: EventFormValues) => {
     setSubmitting(true);
     try {
-      await api.post("/events", values);
+      const response =
+        mode === "create"
+          ? await api.post("/events", values)
+          : await api.patch(`/events/${event!.id}`, values);
 
-      toast.success("Event created successfully");
-      reset();
+      toast.success(
+        mode === "create"
+          ? "Event created successfully."
+          : "Event updated successfully."
+      );
+
+      if (mode === "create") {
+        reset();
+      }
       router.refresh();
       onSuccess?.();
     } catch (error) {
       console.log("ERROR ", error);
-      
+
       if (error instanceof AxiosError) {
+        const status = error.response?.status;
         const data = error.response?.data;
-        const message =
-          data?.error === "Validation failed"
-            ? "Please check the fields and try again"
-            : data?.error ?? "Something went wrong. Please try again.";
-        toast.error(message);
+
+        switch (status) {
+          case 400:
+            toast.error(
+              data?.message ??
+              "Please review the form and try again."
+            );
+            break;
+
+          case 404:
+            toast.error("Event not found.");
+            break;
+
+          case 409:
+            toast.error(
+              data?.message ??
+              "Unable to complete the request."
+            );
+            break;
+
+          case 500:
+            toast.error(
+              data?.message ??
+              "Something went wrong. Please try again."
+            );
+            break;
+
+          default:
+            toast.error(
+              data?.message ??
+              "Failed to save the event."
+            );
+        }
       } else {
         console.error("Failed to create event:", error);
         toast.error("Network error — please check your connection and try again");
@@ -191,24 +254,23 @@ export function EventForm({ onSuccess }: EventFormProps) {
           type="submit"
           disabled={submitting}
           className={cn(
-            "h-11 w-full border-2 border-foreground bg-primary font-medium text-primary-foreground",
+            "group h-11 w-full border-2 border-foreground bg-primary font-medium text-primary-foreground flex items-center rounded-none hover:rounded",
             " transition-all duration-100 mt-4",
             "hover:bg-primary/90",
             "active:translate-x-[2px] active:translate-y-[2px] active:shadow-none",
             submitting && "active:translate-x-0 active:translate-y-0"
           )}
         >
-          {submitting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating...
-            </>
-          ) : (
-            <>
-              Create event
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </>
-          )}
+          {
+            submitting
+              ? mode === "create"
+                ? "Creating..."
+                : "Saving..."
+              : <>
+              {mode === 'create' ? 'Create Event': 'Edit Event' }
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-all" />
+              </>
+          }
         </Button>
       </FieldGroup>
     </form>

@@ -32,9 +32,7 @@ export function CreateEventButton() {
       </DialogTrigger>
 
       <DialogContent
-        className="
-    sm:max-w-xl p-0
-  "
+        className="sm:max-w-xl p-0"
       >
         <DialogHeader className="border-b px-6 py-5 gap-0">
           <DialogTitle className="text-xl font-semibold tracking-tight">
@@ -46,7 +44,7 @@ export function CreateEventButton() {
           </DialogDescription>
         </DialogHeader>
 
-        <EventForm onSuccess={() => setOpen(false)} />
+        <EventForm mode='create' onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   );
