@@ -81,7 +81,9 @@ export function EventForm({ mode,
           ? await api.post("/events", values)
           : await api.patch(`/events/${event!.id}`, values);
 
-      toast.success(
+      console.log("RESPOS", response);
+
+      toast.success(response?.data?.message ? response.data.message :
         mode === "create"
           ? "Event created successfully."
           : "Event updated successfully."
@@ -267,8 +269,8 @@ export function EventForm({ mode,
                 ? "Creating..."
                 : "Saving..."
               : <>
-              {mode === 'create' ? 'Create Event': 'Edit Event' }
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-all" />
+                {mode === 'create' ? 'Create Event' : 'Edit Event'}
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-all" />
               </>
           }
         </Button>

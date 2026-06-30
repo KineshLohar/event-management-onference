@@ -2,15 +2,74 @@
 
 import { CreateEventButton } from "@/components/create-event-button";
 import { EventTable } from "@/components/events/event-table";
+import { EventsPagination } from "@/components/events/events-pagination";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { db } from "@/db";
 import { events } from "@/db/schema";
+import { asc, count } from "drizzle-orm";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic"; // always rendered per-request, never statically cached
+// export const dynamic = "force-dynamic"; // always rendered per-request, never statically cached
 
-export default async function DashboardPage() {
-  const allEvents = await db.select().from(events).orderBy(events.eventDate);
+const PAGE_SIZE = 10;
+
+interface DashboardPageProps {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: DashboardPageProps) {
+  const { page } = await searchParams;
+
+  const requestedPage = Math.max(
+    Number(page ?? 1),
+    1
+  );
+  const [{ count: totalEvents }] = await db
+    .select({
+      count: count(),
+    })
+    .from(events);
+
+  const totalPages = Math.max(
+    Math.ceil(totalEvents / PAGE_SIZE),
+    1
+  );
+
+  if (requestedPage > totalPages && totalEvents > 0) {
+    redirect(`/?page=${totalPages}`);
+  }
+
+  // Clamp page
+  const currentPage = Math.min(
+    requestedPage,
+    totalPages
+  );
+
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
+  // Fetch page
+  const allEvents = await db
+    .select()
+    .from(events)
+    .orderBy(asc(events.eventDate))
+    .limit(PAGE_SIZE)
+    .offset(offset);
+
+  const start =
+    totalEvents === 0
+      ? 0
+      : offset + 1;
+
+  const end =
+    totalEvents === 0
+      ? 0
+      : Math.min(offset + PAGE_SIZE, totalEvents);
+
 
   return (
     <>
@@ -37,6 +96,14 @@ export default async function DashboardPage() {
           </div>
 
           <EventTable events={allEvents} />
+
+          <EventsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalEvents={totalEvents}
+            start={start}
+            end={end}
+          />
         </div>
       </main>
     </>

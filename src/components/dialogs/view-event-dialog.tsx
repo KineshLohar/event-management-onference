@@ -42,7 +42,7 @@ export function ViewEventDialog({
                     </DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="max-h-[70vh]">
-                    <div className="px-4 my-4">
+                    <div className="px-6 my-4">
                         <EventDetails event={event} />
                     </div>
                 </ScrollArea>
