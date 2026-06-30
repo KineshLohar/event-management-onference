@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Event } from "@/db/schema";
 
 import {
@@ -16,9 +16,11 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ViewEventDialog } from "./dialogs/view-event-dialog";
-import { EditEventDialog } from "./dialogs/edit-event-dialog";
-import { DeleteEventDialog } from "./dialogs/delete-event-dialog";
+import { ViewEventDialog } from "../dialogs/view-event-dialog";
+import { EditEventDialog } from "../dialogs/edit-event-dialog";
+import { DeleteEventDialog } from "../dialogs/delete-event-dialog";
+import { ExportPdfButton } from "../export-pdf-button";
+import { EventPdf } from "./event-pdf";
 
 type ModalType = "view" | "edit" | "delete" | null;
 
@@ -29,6 +31,7 @@ interface EventActionsProps {
 export default function EventActions({
     event,
 }: EventActionsProps) {
+    const pdfRef = useRef<HTMLDivElement>(null);
     const [modal, setModal] = useState<ModalType>(null);
 
     return (
@@ -85,6 +88,15 @@ export default function EventActions({
                             Delete Event
                         </TooltipContent>
                     </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <ExportPdfButton contentRef={pdfRef} />
+                        </TooltipTrigger>
+
+                        <TooltipContent>
+                            Delete Event
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             </TooltipProvider>
 
@@ -109,7 +121,12 @@ export default function EventActions({
                 event={event}
             />
             }
-
+            <div className="hidden">
+                <EventPdf
+                    ref={pdfRef}
+                    event={event}
+                />
+            </div>
         </>
     );
 }

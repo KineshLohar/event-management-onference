@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EventForm } from "../event-form";
+import { EventForm } from "../events/event-form";
 
 interface EditEventDialogProps {
   open: boolean;

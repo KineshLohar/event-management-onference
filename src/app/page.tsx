@@ -1,7 +1,7 @@
 
 
 import { CreateEventButton } from "@/components/create-event-button";
-import { EventTable } from "@/components/event-table";
+import { EventTable } from "@/components/events/event-table";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { db } from "@/db";

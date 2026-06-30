@@ -12,14 +12,22 @@ import type { Event } from "@/db/schema";
 
 import { DetailItem } from "./detail-item";
 import { DetailSection } from "./detail-section";
+import { ExportPdfButton } from "../export-pdf-button";
+import { useRef } from "react";
+import { EventPdf } from "./event-pdf";
 
 interface EventDetailsProps {
   event: Event;
 }
 
 export function EventDetails({ event }: EventDetailsProps) {
+  const pdfRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="space-y-6 pb-6">
+      <div className="flex items-center justify-end">
+        <ExportPdfButton contentRef={pdfRef} />
+      </div>
       <DetailSection
         title="Event Information"
         description="General information about the conference event."
@@ -85,6 +93,13 @@ export function EventDetails({ event }: EventDetailsProps) {
           placeholder="No speaker introduction has been generated yet."
         />
       </DetailSection>
+
+      <div className="hidden">
+        <EventPdf
+          ref={pdfRef}
+          event={event}
+        />
+      </div>
     </div>
   );
 }

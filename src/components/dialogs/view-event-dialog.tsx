@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import { EventDetails } from "../event-details";
+import { EventDetails } from "../events/event-details";
 
 interface ViewEventDialogProps {
     open: boolean;
