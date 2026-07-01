@@ -73,13 +73,13 @@ export default async function DashboardPage({
 
   return (
     <>
-      <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+      {/* <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
         <SidebarTrigger />
         <Separator orientation="vertical" className="h-4" />
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
           / events
         </span>
-      </header>
+      </header> */}
 
       <main className="flex-1 px-4 py-8 md:px-8">
         <div className="mx-auto max-w-6xl">
