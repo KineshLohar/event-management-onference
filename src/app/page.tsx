@@ -97,13 +97,13 @@ export default async function DashboardPage({
 
           <EventTable events={allEvents} />
 
-          <EventsPagination
+          {allEvents?.length !== 0 && <EventsPagination
             currentPage={currentPage}
             totalPages={totalPages}
             totalEvents={totalEvents}
             start={start}
             end={end}
-          />
+          />}
         </div>
       </main>
     </>
